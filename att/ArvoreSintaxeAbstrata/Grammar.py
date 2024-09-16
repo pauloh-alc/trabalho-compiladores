@@ -42,13 +42,19 @@ class Exp(Grammar): # A variable from Grammar G
                 self.NextToken()
                 return self.varAssign(pr, varName)
 
-        if self.CurrentToken().type == Consts.SINGLE_QUOTES:
-            if self.parser.Lookahead(2).type == Consts.SINGLE_QUOTES:
+        if self.CurrentToken().type == Consts.DICT_KEY:
+            if self.parser.Lookahead(1).type == Consts.COLON:
+                dict_key = self.CurrentToken()
+
                 self.NextToken()
-                keyName = self.CurrentToken()
-                return self.keyAssign(pr, keyName)
+                self.NextToken()
+
+                sub_node = pr.registry(NoOpBinaria.Perform(Term(self.parser), (Consts.PLUS, Consts.MINUS)))
+
+                return pr.success(NoKeyAssign(dict_key, sub_node))
 
         node = pr.registry(NoOpBinaria.Perform(Term(self.parser), (Consts.PLUS, Consts.MINUS)))
+
         if pr.error:
             return pr.fail(f"{Error.parserError}: Esperado a '{Consts.INT}', '{Consts.FLOAT}', '{Consts.ID}', '{Consts.LET}', '{Consts.PLUS}', '{Consts.MINUS}', '{Consts.LPAR}'")
         return pr.success(node)
@@ -145,7 +151,7 @@ class DictExp(Grammar):
         elementNodes = []
         self.NextToken()
 
-        if (self.CurrentToken().type == Consts.RCURLY_BRACE):  # TTuple vazia
+        if self.CurrentToken().type == Consts.RCURLY_BRACE:  # TDict vazio
             self.NextToken()
         else:
             elementNodes.append(ast.registry(Exp(self.parser).Rule()))

@@ -27,6 +27,7 @@ class Consts:
     RCURLY_BRACE = "}"
     LCURLY_BRACE = "{"
     SINGLE_QUOTES = "\'"
+    DICT_KEY = "DICT_KEY"
     COLON = ":"
 
 

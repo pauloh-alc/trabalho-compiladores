@@ -1,5 +1,3 @@
-import matplotlib.pyplot as plt
-import networkx as nx
 from Consts import Consts
 from Token import Token
 from Error import Error
@@ -25,15 +23,17 @@ class Lexer:
 
     def makeTokens(self):
         tokens = []
-        while self.current != None:
+        while self.current is not None:
             if self.current in ' \t':
                 self.__advance()
             elif self.current in Consts.DIGITOS:
                 tokens.append(self.__makeNumber())
             elif self.current in Consts.LETRAS + Consts.UNDER:
                 tokens.append(self.__makeId())
-            elif(self.current == '"'):
+            elif self.current is '"':
                 tokens.append(self.MakeString())
+            elif self.current == Consts.SINGLE_QUOTES:
+                tokens.append(self.make_dict_key())
             elif self.current == Consts.PLUS:
                 tokens.append(Token(Consts.PLUS))
                 self.__advance()
@@ -69,9 +69,6 @@ class Lexer:
                 self.__advance()
             elif self.current == Consts.LCURLY_BRACE:
                 tokens.append(Token(Consts.LCURLY_BRACE))
-                self.__advance()
-            elif self.current == Consts.SINGLE_QUOTES:
-                tokens.append(Token(Consts.SINGLE_QUOTES))
                 self.__advance()
             elif self.current == Consts.COLON:
                 tokens.append(Token(Consts.COLON))
@@ -112,6 +109,19 @@ class Lexer:
 
         tokType = Consts.KEY if lexema in Consts.KEYS else Consts.ID
         return Token(tokType, lexema)
+
+    def make_dict_key(self):
+        lexema = ''
+
+        self.__advance()
+
+        while self.current is not "'" and self.current in Consts.LETRAS_DIGITOS + Consts.UNDER:
+            lexema += self.current
+            self.__advance()
+
+        self.__advance()
+
+        return Token(Consts.DICT_KEY, lexema)
     
     def MakeString(self):
         stri = ""

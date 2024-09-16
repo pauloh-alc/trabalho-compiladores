@@ -132,12 +132,9 @@ class TTuple(TValue):
 	def __repr__(self):
 		return f"{str(self.value)}"
 
-
-
 class TDict(TValue):
-	def __init__(self, key, value):
-		self.key = key
-		self.value[key] = value
+	def __init__(self, value):
+		self.value = value
 		self.setMemory()
 
 	def setMemory(self, memory=None):
@@ -146,7 +143,7 @@ class TDict(TValue):
 
 	def add(self, other):
 		if isinstance(other, TDict):
-			self.value[self.key] = other.value
+			self.value[other.key] = other.value
 			return TDict(self.key, self.value).setMemory(self.memory), None
 		# if isinstance(other, TNumber):
 		# 	return TList(self.value + [other.value]).setMemory(self.memory), None

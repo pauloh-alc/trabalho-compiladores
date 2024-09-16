@@ -10,8 +10,6 @@
 <Tuple> ::= LPAR [ <Exp> (COMMA <Exp>)* ] RPAR
 <Dict> ::= LCURLY_BRACE [ (SINGLE_QUOTES ID SINGLE_QUOTES COLON <Exp>)* ] RCURLY_BRACE
 
-{key: value, }
-
 onde,
     (x)* é zero ou mais x
     (u | v) é a escolha de u ou v

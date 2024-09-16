@@ -41,13 +41,17 @@ class NoOpBinaria(Visitor):
 		self.opTok = opTok
 		self.noDir = rightNode
 	def __repr__(self):
-		return f'({self.noEsq}, {self.opTok}, {self.noDir})'	
+		return f'({self.noEsq}, {self.opTok}, {self.noDir})'
 	@staticmethod
 	def Perform(GVar1, ops, GVar2=None): # Grammar Var (GVar), Operator options (ops=+,- ou *, /)
-		if GVar2==None: GVar2 = GVar1
+		if GVar2 is None:
+			GVar2 = GVar1
+
 		ast = GVar1.GetParserManager()
 		op_bin_ou_esq = ast.registry(GVar1.Rule())
-		if ast.error: return ast
+		if ast.error:
+			return ast
+
 		while GVar1.CurrentToken().type in ops:
 			token_operador = GVar1.CurrentToken()
 			GVar1.NextToken()
@@ -183,24 +187,20 @@ class NoTuple(Visitor):
 	def __repr__(self):
 		return f'{self.elements}'
 
-
 class NoDict(Visitor):
 	def __init__(self, tok):
 		self.elements = tok
+		self.dict_node = {}
 
 	def visit(self, operator):
-		return operator.success(TTuple(self.elements.value).setMemory(operator))
+		return operator.success(TDict(self.dict_node).setMemory(operator))
 
 	def visit(self, operator):
-		lValue = {}
 
 		for element_node in self.elements:
-			print(element_node)
-			# lValue[] =
+			self.dict_node[element_node.keyNameTok.value] = element_node.valueNode.visit(operator).value
 
-			# tuple([operator.registry(element_node.visit(operator)).value])
-
-		return operator.success(TTuple(lValue).setMemory(operator))
+		return operator.success(TDict(self.dict_node).setMemory(operator))
 
 	def __repr__(self):
 		return f'{self.elements}'
