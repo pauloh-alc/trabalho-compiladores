@@ -143,10 +143,9 @@ class TDict(TValue):
 
 	def add(self, other):
 		if isinstance(other, TDict):
-			self.value[other.key] = other.value
-			return TDict(self.key, self.value).setMemory(self.memory), None
-		# if isinstance(other, TNumber):
-		# 	return TList(self.value + [other.value]).setMemory(self.memory), None
+			self.value.update(other.value)
+			return TDict(self.value).setMemory(self.memory), None
+
 		return super().add(other)
 
 	def copy(self):
